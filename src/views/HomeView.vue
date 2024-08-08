@@ -1,68 +1,40 @@
 <template>
   <v-app>
     <!-- Header -->
-    <v-app-bar color="blue" dark>
-      <v-toolbar-title>Login Page</v-toolbar-title>
+    <v-app-bar class="blue-dark" dark>
+      <v-spacer></v-spacer>
+      <v-img
+        src="@/assets/logo.png"
+        contain
+        max-width="100"
+        class="logo"
+      ></v-img>
+      <v-spacer></v-spacer>
     </v-app-bar>
 
     <!-- Main Content -->
-    <v-main>
-      <v-container fluid fill-height>
-        <v-row
-          align="center"
-          justify="center"
-          class="fill-height"
-        >
-          <v-col cols="12" sm="10" md="8" lg="6" xl="4">
-            <v-card>
-              <v-card-title>
-                <span class="headline">Login</span>
-              </v-card-title>
-              <v-card-text>
-                <v-form @submit.prevent="submitForm">
-                  <v-text-field
-                    v-model="email"
-                    label="Email"
-                    type="email"
-                    required
-                    outlined
-                    dense
-                  />
-                  <v-text-field
-                    v-model="password"
-                    label="Password"
-                    type="password"
-                    required
-                    outlined
-                    dense
-                  />
-                  <v-btn type="submit" color="blue" class="mt-4" block>Login</v-btn>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+    <v-main class="home-background">
+      <Login />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
-// Form data
-const email = ref('');
-const password = ref('');
-
-// Form submission handler
-const submitForm = () => {
-  alert(`Email: ${email.value}\nPassword: ${password.value}`);
-};
+import Login from './Login.vue'; // Asegúrate de la ruta correcta
 </script>
 
 <style scoped>
-  .fill-height {
-    height: 100vh;
-    margin-top: 400px;
-  }
+.blue-dark {
+  background-color: #003366; /* Azul oscuro */
+}
+.logo {
+  max-width: 100px; /* Ajusta el tamaño de la imagen si es necesario */
+}
+.home-background {
+  background-image: url('@/assets/background.jpg');
+  background-size: cover;      /* Asegura que la imagen cubra toda el área */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  min-height: 100vh;           /* Asegura que el fondo cubra toda la altura de la pantalla */
+}
 </style>
