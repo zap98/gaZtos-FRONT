@@ -42,7 +42,7 @@ export default createStore({
 
         return response;
         
-      } catch (error) {
+      } catch (error: any) {
         if (axios.isAxiosError(error)) {
           commit('SET_USER', null);
           commit('SET_AUTH_ERROR', error.response?.data?.message || 'Login failed');
@@ -76,7 +76,7 @@ export default createStore({
     
         return response;
     
-      } catch (error) {
+      } catch (error: any) {
         if (axios.isAxiosError(error)) {
           // El error es de Axios, por lo que tiene un objeto `response`
           console.error('Error al obtener la imagen de perfil:', error.response ? error.response.data : error.message);
@@ -93,6 +93,15 @@ export default createStore({
       try {
         await axios.post('/api/auth/logout');
         localStorage.removeItem('authToken');
+        commit('SET_USER', null);
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    },
+
+    async prueba({ commit }) {
+      try {
+        await axios.post('/api/auth/prueba');
         commit('SET_USER', null);
       } catch (error) {
         console.error('Logout failed:', error);
@@ -118,7 +127,9 @@ export default createStore({
       } catch (error) {
         if (axios.isAxiosError(error)) {
           // El error es de Axios, por lo que tiene un objeto `response`
+          // @ts-ignore
           console.error('Error en el registro:', error.response ? error.response.data : error.message);
+          // @ts-ignore
           commit('SET_AUTH_ERROR', error.response?.data?.message || 'Registro fallido');
         } else {
           // Otro tipo de error

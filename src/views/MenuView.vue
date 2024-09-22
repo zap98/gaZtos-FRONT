@@ -35,6 +35,7 @@
       <!-- Main Content -->
       <v-main class="home-background">
         <h1>PANTALLA DEL MENU INICIAL</h1>
+        <v-btn @click="prueba">Llamar a Prueba</v-btn>
       </v-main>
     </v-app>
   </template>
@@ -49,6 +50,10 @@
   
   const profileImage = ref<string>(''); // Guardar la URL de la imagen de perfil
   const router = useRouter();
+
+  const prueba = async () => {
+    const response = await store.dispatch('prueba');
+  }
   
   // Obtener la imagen de perfil del usuario
   const getProfileImage = async () => {
@@ -64,7 +69,7 @@
   };
   
   onMounted(() => {
-    getProfileImage(); 
+    //getProfileImage(); 
   });
   
   const logout = () => {

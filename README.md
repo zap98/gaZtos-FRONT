@@ -18,6 +18,8 @@
     - Verificar si Vue CLI está instalado: vue --version
     - Instalar dependencias: yarn add @vue/cli-service --dev
     - Utilizar el comando si es necesario para reinstalar dependencias: yarn install
+
+5. Instalación de las dependencias de axios: yarn add axios
 ```
 
 ## Project setup

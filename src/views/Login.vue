@@ -101,7 +101,7 @@ const login = async () => {
         loading.value = false;
       }
 
-    } catch (error) {
+    } catch (error: any) {
       if (axios.isAxiosError(error)) {
           // El error es de Axios, por lo que tiene un objeto `response`
           console.error('Error en el login:', error.response ? error.response.data : error.message);
@@ -127,7 +127,7 @@ const register = async () => {
     height: 100vh;
     display: flex;
     align-items: center;
-    margin-top: 400px; /* Centra verticalmente */
+    margin-top: 300px; /* Centra verticalmente */
   }
 
   .blue-dark {
