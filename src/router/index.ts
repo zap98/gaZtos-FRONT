@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Menu from "@/views/MenuView.vue";
-import Register from "@/views/Register.vue";
+import RecoveryPassword from "@/views/Login/RecoveryPassword.vue";
+import Register from "@/views/Login/Register.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,6 +31,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "menu",
     component: Menu,
   },
+
+  {
+    path: "/reset-password",
+    name: "recoveryPassword",
+    component: RecoveryPassword,
+  }
 ];
 
 const router = createRouter({

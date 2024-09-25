@@ -62,25 +62,86 @@ export default createStore({
       }
     },
 
-    async getProfileImg({ commit }, username: string) {
+    async getProfileImg({ }, userData) {
       try {
-        const response = await axios.get(`/api/user/getProfileImg`, {
-          params: { username }
-        });
+          const response = await axios.get('/api/user/getProfileImg', {
+              params: { username: userData.username },
+              responseType: 'arraybuffer'
+          });
+  
+          // Convertir el arraybuffer a una URL de datos
+          const base64 = btoa(
+              new Uint8Array(response.data).reduce(
+                  (data, byte) => data + String.fromCharCode(byte),
+                  ''
+              )
+          );
+          const contentType = response.headers['content-type'];
+          return `data:${contentType};base64,${base64}`;
+      } catch (error) {
+          console.error('Error en getProfileImg:', error);
+          throw error;
+      }
+    },  
+
+    async recoveryPassword({ commit }, userData: { email: string }) {
+      try {
+        const response = await axios.post(`/api/auth/forgot-password`, userData);
     
-        console.log('Imagen de perfil obtenida:', response.data);
-    
-        // Suponiendo que la respuesta tiene un campo 'profileImageUrl' con la URL de la imagen
-        commit('SET_PROFILE_IMAGE', response.data);
-        commit('SET_AUTH_ERROR', null);  // Limpia los errores anteriores si la solicitud es exitosa
+        commit('SET_USER', response.data);
+        commit('SET_AUTH_ERROR', null);
     
         return response;
     
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           // El error es de Axios, por lo que tiene un objeto `response`
-          console.error('Error al obtener la imagen de perfil:', error.response ? error.response.data : error.message);
-          commit('SET_AUTH_ERROR', error.response?.data?.message || 'Error al obtener la imagen de perfil');
+          console.error('Error en la recuperación de la contraseña:', error.response ? error.response.data : error.message);
+          commit('SET_AUTH_ERROR', error.response?.data?.message || 'Error al recuperar la contraseña');
+        } else {
+          // Otro tipo de error
+          console.error('Error inesperado:', error);
+          commit('SET_AUTH_ERROR', 'Ocurrió un error inesperado');
+        }
+      }
+    },
+
+    async changePasswordR({ commit }, userData: { password: string }) {
+      try {
+        const response = await axios.post(`/api/auth/recoveryPassword`, userData);    
+   
+        commit('SET_USER', response.data);
+        commit('SET_AUTH_ERROR', null);
+    
+        return response;
+    
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          // El error es de Axios, por lo que tiene un objeto `response`
+          console.error('Error en la recuperación de la contraseña:', error.response ? error.response.data : error.message);
+          commit('SET_AUTH_ERROR', error.response?.data?.message || 'Error al recuperar la contraseña');
+        } else {
+          // Otro tipo de error
+          console.error('Error inesperado:', error);
+          commit('SET_AUTH_ERROR', 'Ocurrió un error inesperado');
+        }
+      }
+    },
+
+    async changePassword({ commit }, userData: { password: string, username: string }) {
+      try {
+        const response = await axios.post(`/api/user/changePassword`, userData);
+    
+        commit('SET_USER', response.data);
+        commit('SET_AUTH_ERROR', null);
+    
+        return response;
+    
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          // El error es de Axios, por lo que tiene un objeto `response`
+          console.error('Error en la modificación de la contraseña:', error.response ? error.response.data : error.message);
+          commit('SET_AUTH_ERROR', error.response?.data?.message || 'Error al modificar la contraseña');
         } else {
           // Otro tipo de error
           console.error('Error inesperado:', error);
@@ -114,30 +175,32 @@ export default createStore({
       username: string;
       email: string;
       password: string;
+      profilePicture?: File; // Asegúrate de que el tipo de File es opcional
     }) {
-      try {
-        const response = await axios.post('/api/auth/register', userData);
+      try {    
+        const response = await axios.post(`/api/auth/register`, userData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Especifica que se está enviando FormData
+          },
+        });
+    
         console.log('Registro exitoso:', response.data);
-
         commit('SET_USER', response.data);
         commit('SET_AUTH_ERROR', null);
-
+    
         return response;
         
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          // El error es de Axios, por lo que tiene un objeto `response`
-          // @ts-ignore
           console.error('Error en el registro:', error.response ? error.response.data : error.message);
           // @ts-ignore
           commit('SET_AUTH_ERROR', error.response?.data?.message || 'Registro fallido');
         } else {
-          // Otro tipo de error
           console.error('Error inesperado:', error);
           commit('SET_AUTH_ERROR', 'Ocurrió un error inesperado');
         }
       }
-    }
+    }    
   },
   modules: {},
 });

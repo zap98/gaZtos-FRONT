@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import Login from './Login.vue'; // Asegúrate de la ruta correcta
+import Login from './Login/Login.vue'; // Asegúrate de la ruta correcta
 </script>
 
 <style scoped>
