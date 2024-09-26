@@ -80,7 +80,7 @@
             :msgShow="msgShowRecovery"
           />
           <LoadingComponent :visible="loadingRecovery" />
-          <v-form @submit.prevent="recoverPassword">
+          <v-form @submit.prevent="recoveryPassword">
             <v-text-field
               v-model="email"
               label="Email"
@@ -170,13 +170,11 @@ const login = async () => {
           'Error en el login:',
           error.response ? error.response.data : error.message
         );
-        alertMessage.value =
-          'Hubo un problema con el login. Intente nuevamente.';
+        alertMessage.value = 'Hubo un problema con el login. Intente nuevamente.';
       } else {
         console.error('Error inesperado:', error);
         typeMsg.value = 'error';
-        alertMessage.value =
-          'Ocurrió un error inesperado. Intente nuevamente.';
+        alertMessage.value = 'Ocurrió un error inesperado. Intente nuevamente.';
       }
     }
   }
@@ -184,6 +182,7 @@ const login = async () => {
 
 const closeDialog = () => {
   dialog.value = false;
+  msgShow.value = false;
   email.value = '';
   msgShowRecovery.value = false;
   alertMessage.value = '';
@@ -193,7 +192,7 @@ const register = async () => {
   router.push('/register');
 };
 
-const recoverPassword = async () => {
+const recoveryPassword = async () => {
   // Lógica para la recuperación de contraseña con el email ingresado
   if (email.value === '') {
     alertMessage.value = 'Por favor, ingrese su email.';
@@ -218,9 +217,12 @@ const recoverPassword = async () => {
         loadingRecovery.value = true;
         const response = await store.dispatch('recoveryPassword', userData);
 
-        console.log("Respuesta: " , response);
-
-        if (response?.status === 200 && response?.data === "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.") {
+        if (response.data.token == null && response.data.username == null) {
+          loadingRecovery.value = false;
+          typeMsg.value = 'error';
+          msgShowRecovery.value = true;
+          alertMessage.value = 'El email introducido no corresponde a ningún usuario registrado. Intente nuevamente.';
+        } else if (response.data.token !== null && response.data.username !== null) {
           typeMsg.value = 'success';
           msgShowRecovery.value = true;
           alertMessage.value = 'Instrucciones enviadas a su email.';
@@ -234,11 +236,6 @@ const recoverPassword = async () => {
 
           dialog.value = false;
           email.value = "";
-        } else if (response?.status === 200 && response.data === "") {
-          loadingRecovery.value = false;
-          typeMsg.value = 'error';
-          msgShowRecovery.value = true;
-          alertMessage.value = 'El email introducido no corresponde a ningún usuario registrado. Intente nuevamente.';
         } else {
           typeMsg.value = 'error';
           msgShowRecovery.value = true;

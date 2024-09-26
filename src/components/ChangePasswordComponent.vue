@@ -58,7 +58,6 @@
   import { ref, defineEmits } from 'vue';
   import axios from 'axios';
   import store from '@/store';
-  import { useRouter } from 'vue-router';
   import { defineProps } from 'vue';
   
   const loading = ref<boolean>(false);
@@ -78,9 +77,7 @@
     },
   });
   
-  const emit = defineEmits();
-  
-  const router = useRouter();
+  const emit = defineEmits();  
   
   const toggleShowNewPassword = () => {
     showNewPassword.value = !showNewPassword.value;
@@ -115,7 +112,7 @@
           loading.value = true;            
           response.value = await store.dispatch('changePassword', userData);
           
-          if (response?.value.data == "OK") {
+          if (response?.value.data.status == "success") {
             loading.value = false;
             msgShow.value = true;
             typeMsg.value = 'success';
@@ -127,11 +124,18 @@
               closeChangePassword(); // Llama a la función para cerrar
             }, 2000);
   
-          } else if (response?.value.data == "Equal passwords") {
+          } else if (response?.value.data.status == "warning") {
             loading.value = false;
             msgShow.value = true;
             typeMsg.value = 'warning';
             alertMessage.value = 'Introduce una contraseña diferente a la actual';
+            newPassword.value = "";
+            confirmPassword.value = "";
+          } else {
+            loading.value = false;
+            msgShow.value = true;
+            typeMsg.value = 'error';
+            alertMessage.value = 'Error en la restauración de la contraseña. Intente nuevamente.';
             newPassword.value = "";
             confirmPassword.value = "";
           }

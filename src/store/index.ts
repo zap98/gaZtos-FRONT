@@ -84,9 +84,16 @@ export default createStore({
       }
     },  
 
+    // Action para recuperar la contraseña
     async recoveryPassword({ commit }, userData: { email: string }) {
       try {
         const response = await axios.post(`/api/auth/forgot-password`, userData);
+
+        const token = response.data.token;
+        const user = response.data.username;
+
+        localStorage.setItem('username', user);
+        localStorage.setItem('authToken', token);        
     
         commit('SET_USER', response.data);
         commit('SET_AUTH_ERROR', null);
@@ -106,7 +113,12 @@ export default createStore({
       }
     },
 
-    async changePasswordR({ commit }, userData: { password: string }) {
+    // Action para el cambio de la contraseña desde la url enviada al correo
+    async changePasswordRecovery({ commit }, userData: { 
+      password: string, 
+      username: string, 
+      token: string 
+    }) {
       try {
         const response = await axios.post(`/api/auth/recoveryPassword`, userData);    
    
@@ -128,6 +140,7 @@ export default createStore({
       }
     },
 
+    // Action para modificar la contraseña
     async changePassword({ commit }, userData: { password: string, username: string }) {
       try {
         const response = await axios.post(`/api/user/changePassword`, userData);
@@ -162,10 +175,11 @@ export default createStore({
 
     async prueba({ commit }) {
       try {
-        await axios.post('/api/auth/prueba');
+        const response = await axios.post('/api/auth/prueba');
+        console.log('Response:', response.data);
         commit('SET_USER', null);
       } catch (error) {
-        console.error('Logout failed:', error);
+        console.error('failed:', error);
       }
     },
 

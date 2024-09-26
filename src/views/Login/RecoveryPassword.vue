@@ -100,38 +100,50 @@ import { useRouter } from 'vue-router';
       } else {
         msgShow.value = false;
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         const userName = localStorage.getItem('username');
 
         if (validarPassword(newPassword.value, confirmPassword.value)) {
             const userData = {
                 password: newPassword.value,
-                username: userName
+                username: userName,
+                token: token
             }
 
             try {
               loading.value = true;
               
-              response.value = await store.dispatch('changePasswordR', userData);    
+              response.value = await store.dispatch('changePasswordRecovery', userData); 
               
-              if (response?.value.data == "OK") {
+              if (response?.value.data.status == "success") {
                 loading.value = false;
                 msgShow.value = true;
+                newPassword.value = "";
+                confirmPassword.value = "";
                 typeMsg.value = 'success';
                 alertMessage.value = 'Contraseña modificada con éxito.';
+                
+                setTimeout(() => {
+                  msgShow.value = false;
+                  alertMessage.value = "";
+                  router.push('/');
+                }, 2000);
+
+              } else {
+
+                loading.value = false;
+                msgShow.value = true;
+                typeMsg.value = 'error';
+                alertMessage.value = 'La contraseña no se ha podido modificar. Intentelo nuevamente.';
+                newPassword.value = "";
+                confirmPassword.value = "";
 
                 setTimeout(() => {
                   msgShow.value = false;
                   alertMessage.value = "";
-                  router.push('/menu');
+                  router.push('/');
                 }, 2000);
-
-              } else if (response?.value.data == "Equal passwords") {
-                loading.value = false;
-                msgShow.value = true;
-                typeMsg.value = 'warning';
-                alertMessage.value = 'Introduce una contraseña diferente a la actual';
-                newPassword.value = "";
-                confirmPassword.value = "";
               }
 
             } catch (error) {

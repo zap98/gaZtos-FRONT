@@ -172,12 +172,12 @@
             loading.value = true;
             const response = await store.dispatch('register', formData); // Envía FormData
   
-            if (response.data === 'El usuario ya existe') {
+            if (response.data.status == 'error') {
               typeMsg.value = 'warning';
               msgShow.value = true;
               alertMessage.value = response.data;
               loading.value = false;
-            } else if (response.data === 'Usuario registrado exitosamente') {
+            } else if (response.data.status == 'success') {
               typeMsg.value = 'success';
               msgShow.value = true;
               alertMessage.value = 'Usuario registrado exitosamente';
