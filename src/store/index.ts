@@ -25,6 +25,7 @@ export default createStore({
   },
   actions: {
 
+    // Action para el logueo del usuario
     async login({ commit }, userData: {
       username: string;
       password: string;
@@ -62,6 +63,7 @@ export default createStore({
       }
     },
 
+    // Action para obtener la imagen de perfil del usuario una vez logueado 
     async getProfileImg({ }, userData) {
       try {
           const response = await axios.get('/api/user/getProfileImg', {
@@ -140,7 +142,7 @@ export default createStore({
       }
     },
 
-    // Action para modificar la contraseña
+    // Action para modificar la contraseña en las opciones el usuario
     async changePassword({ commit }, userData: { password: string, username: string }) {
       try {
         const response = await axios.post(`/api/user/changePassword`, userData);
@@ -163,16 +165,6 @@ export default createStore({
       }
     },
 
-    async logout({ commit }) {
-      try {
-        await axios.post('/api/auth/logout');
-        localStorage.removeItem('authToken');
-        commit('SET_USER', null);
-      } catch (error) {
-        console.error('Logout failed:', error);
-      }
-    },
-
     async prueba({ commit }) {
       try {
         const response = await axios.post('/api/auth/prueba');
@@ -183,6 +175,7 @@ export default createStore({
       }
     },
 
+    // Action para registrar al usuario
     async register({ commit }, userData: {
       firstName: string;
       lastName: string;
