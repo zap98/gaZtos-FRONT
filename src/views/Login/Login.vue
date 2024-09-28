@@ -202,7 +202,7 @@ const recoveryPassword = async () => {
     msgShowRecovery.value = false;
 
     if (!regex.test(email.value)) {
-      typeMsg.value = 'error';
+      typeMsg.value = 'warning';
       msgShowRecovery.value = true;
       alertMessage.value = 'Formato del email no válido';
     } else {
